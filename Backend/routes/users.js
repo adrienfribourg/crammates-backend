@@ -22,6 +22,10 @@ router.post('/register', async (req, res) => {
             courses
         });
 
+        // Hash the password before saving
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+
         await user.save();
 
         const payload = {
@@ -32,7 +36,7 @@ router.post('/register', async (req, res) => {
 
         jwt.sign(
             payload,
-            process.env.JWT_SECRET, // Use environment variable
+            process.env.JWT_SECRET,
             { expiresIn: 3600 },
             (err, token) => {
                 if (err) throw err;
