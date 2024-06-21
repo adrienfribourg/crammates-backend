@@ -29,7 +29,13 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use('/api/users', users);
 
 // Handle preflight requests
-app.options('*', cors(corsOptions));
+app.options('*', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', corsOptions.origin);
+    res.setHeader('Access-Control-Allow-Methods', corsOptions.methods);
+    res.setHeader('Access-Control-Allow-Headers', corsOptions.allowedHeaders);
+    res.setHeader('Access-Control-Allow-Credentials', corsOptions.credentials);
+    res.sendStatus(204); // No Content
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
